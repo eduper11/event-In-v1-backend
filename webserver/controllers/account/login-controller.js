@@ -5,7 +5,7 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const mysqlPool = require("../../../databases/mysql-pool");
 
-// const AccountNotActivatedError = require("./errors/account-not-activated-error");
+const AccountNotActivatedError = require("../errors/account-not-activated-error");
 
 async function validateData(payload) {
   const schema = {
@@ -37,7 +37,7 @@ async function login(req, res, next) {
   try {
     const connection = await mysqlPool.getConnection();
     const sqlQuery = `SELECT
-    id, uuid, email, password, activated_at
+    user_id, uuid, email, password, activated_at, event_joined, rol
     FROM users
     WHERE email = '${accountData.email}'`;
 
@@ -46,14 +46,16 @@ async function login(req, res, next) {
     if (result.length === 1) {
       const userData = result[0];
       /*
-      userData es esto:
+      userData es algo como:
       {
-  id: 66,
+  user_id: 66,
   uuid: 'fb66233b-23b4-46ad-bdf3-51e65dbb2f8e',
-  email: 'josetest@yopmail.com',
+  email: 'eduper123@yopmail.com',
   password:
    '$2b$10$lW7xAAZSs2TnaX7Ua.7LGOa4bHpBQ53ig2TWRdS.EMB8XihVcckrO',
   activated_at: 2019-03-01T19:00:57.000Z 
+  event_joined: 23, 
+  rol: 1 ó 0 (boolean)
 }
   */
       if (!userData.activated_at) {
@@ -79,19 +81,26 @@ async function login(req, res, next) {
       }
 
       /**
-       * Paso 4: Generar token JWT con uuid + role (admin) asociado al token
-       * La duración del token es de 1 minuto (podria ir en variable de entorno)
+       * Paso 4: Generar token JWT con uuid + rol asociado al token
+       * La duración del token es de 1h (en variable de entorno)
        */
       const payloadJwt = {
         uuid: userData.uuid,
-        role: "admin" // userData.role si viene de bbdd
+        rol: userData.rol // userData.role si viene de bbdd
       };
 
+      /**
+       * TODO: hacer que el token pase el uuid y el email del user
+       *
+       */
+
       const jwtTokenExpiration = parseInt(
-        process.env.AUTH_ACCESS_TOKEN_TTL,
+        process.env.AUTH_JWT_ACCESS_TOKEN_TTL,
         10
       );
-      const token = jwt.sign(payloadJwt, process.env.AUTH_JWT_SECRET, {
+
+      console.log(process.env.AUTH_JWT_PASS);
+      const token = jwt.sign(payloadJwt, process.env.AUTH_JWT_PASS, {
         expiresIn: jwtTokenExpiration
       });
       const response = {

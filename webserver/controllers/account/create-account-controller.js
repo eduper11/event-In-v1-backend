@@ -48,14 +48,13 @@ async function validateSchema(payload) {
 async function addUserProfile(uuid, full_name) {
   const fullName = full_name;
   const verificationCode = uuid;
-  console.log(uuid);
 
   const sqlQuery = `INSERT INTO user_profile SET ?`;
 
   const connection = await mysqlPool.getConnection();
 
   await connection.query(sqlQuery, {
-    user_uuid: verificationCode,
+    uuid: verificationCode,
     full_name: fullName
   });
 
@@ -81,7 +80,7 @@ async function addVerificationCode(uuid) {
   const connection = await mysqlPool.getConnection();
 
   await connection.query(sqlQuery, {
-    user_uuid: uuid,
+    uuid: uuid,
     verification_code: verificationCode,
     created_at: createdAt
   });
@@ -111,7 +110,6 @@ async function sendEmailRegistration(userEmail, verificationCode) {
 
 async function createAccount(req, res, next) {
   const accountData = req.body;
-  console.log(accountData);
   try {
     await validateSchema(accountData);
   } catch (e) {

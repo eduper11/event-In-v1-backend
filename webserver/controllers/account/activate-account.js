@@ -14,12 +14,12 @@ async function activate(req, res, next) {
 
   const now = new Date();
   const sqlActivateQuery = `UPDATE users_activation
-SET verified_at = '${now
+SET activated_at = '${now
     .toISOString()
     .substring(0, 19)
     .replace("T", " ")}'
 WHERE verification_code='${verificationCode}'
-AND verified_at IS NULL`;
+AND activated_at IS NULL`;
 
   try {
     const connection = await mysqlPool.getConnection();
@@ -28,10 +28,10 @@ AND verified_at IS NULL`;
     if (result[0].affectedRows === 1) {
       const sqlActivateUserQuery = `UPDATE users u
       JOIN users_activation uv
-      ON u.uuid = uv.user_uuid
+      ON u.uuid = uv.uuid
       AND u.activated_at IS NULL
       AND uv.verification_code = '${verificationCode}'
-      SET u.activated_at = uv.verified_at`;
+      SET u.activated_at = uv.activated_at`;
 
       const resultActivateUser = await connection.query(sqlActivateUserQuery);
       if (resultActivateUser[0].affectedRows === 1) {
