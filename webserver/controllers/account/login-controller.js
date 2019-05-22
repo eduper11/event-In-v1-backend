@@ -69,12 +69,12 @@ async function login(req, res, next) {
       /**
        * Paso3: La clave es valida?
        */
-      const laPasswordEstaOk = await bcrypt.compare(
+      const correctPass = await bcrypt.compare(
         accountData.password,
         userData.password
       );
-      if (laPasswordEstaOk === false) {
-        // !laPasswordEstaOk
+      if (correctPass === false) {
+        // !correctPass
         return res.status(401).send();
       }
 

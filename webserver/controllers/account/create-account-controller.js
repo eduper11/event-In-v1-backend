@@ -17,6 +17,7 @@ async function validateSchema(payload) {
    * fullName: String with 3 minimun characters and max 128
    */
   const schema = {
+    full_name: Joi.string().required(),
     email: Joi.string()
       .email({ minDomainAtoms: 2 })
       .required(),
@@ -28,11 +29,11 @@ async function validateSchema(payload) {
   return Joi.validate(payload, schema);
 }
 
-/**
- * Create users wall
- * @param {String} uuid User identifier
- * @return {Object} wall Users wall
- */
+// /**
+//  * Create users wall
+//  * @param {String} uuid User identifier
+//  * @return {Object} wall Users wall
+//  */
 // async function createWall(uuid) {
 //   const data = {
 //     uuid,
@@ -44,12 +45,23 @@ async function validateSchema(payload) {
 //   return wall;
 // }
 
-async function createProfile(uuid) {
-  const sqlCreateProfileQuery = `INSERT INTO user_profile`;
+async function addUserProfile(uuid, full_name) {
+  const fullName = full_name;
+  const verificationCode = uuid;
+  console.log(uuid);
 
-  const profileCreated = await UserModel.create(userProfileData);
+  const sqlQuery = `INSERT INTO user_profile SET ?`;
 
-  return profileCreated;
+  const connection = await mysqlPool.getConnection();
+
+  await connection.query(sqlQuery, {
+    user_uuid: verificationCode,
+    full_name: fullName
+  });
+
+  connection.release();
+
+  return fullName;
 }
 
 /**
@@ -99,7 +111,7 @@ async function sendEmailRegistration(userEmail, verificationCode) {
 
 async function createAccount(req, res, next) {
   const accountData = req.body;
-
+  console.log(accountData);
   try {
     await validateSchema(accountData);
   } catch (e) {
@@ -138,7 +150,7 @@ async function createAccount(req, res, next) {
 
     await sendEmailRegistration(accountData.email, verificationCode);
     // await createWall(uuid);
-    await createProfile(uuid);
+    await addUserProfile(uuid, accountData.full_name);
 
     return res.status(201).send();
   } catch (e) {
