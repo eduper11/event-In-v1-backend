@@ -2,17 +2,23 @@
 
 const mysqlPool = require("../../../databases/mysql-pool");
 
-async function selectEventRol(req, res, next) {
+async function joinToEvent(req, res, next) {
   const eventData = req.body;
   const { uuid } = req.claims;
+  const now = new Date()
 
   const connection = await mysqlPool.getConnection();
-  const sqlInsert = `UPDATE users SET ? WHERE uuid = '${uuid}'`;
+  const sqlInsert = `UPDATE user_events SET ?`;
+  
 
   try {
     const result = await connection.query(sqlInsert, {
-      event_joined: eventData.event_id,
-      rol: eventData.rol
+      uuid: uuid,
+      event_id: eventData.event_id,
+      rol: eventData.rol,
+      last_update: now..toISOString()
+        .substring(0, 19)
+        .replace("T", " "),
     });
     return res.status(201).send();
   } catch (e) {
@@ -20,4 +26,4 @@ async function selectEventRol(req, res, next) {
   }
 }
 
-module.exports = selectEventRol;
+module.exports = joinToEvent;

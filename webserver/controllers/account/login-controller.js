@@ -37,7 +37,7 @@ async function login(req, res, next) {
   try {
     const connection = await mysqlPool.getConnection();
     const sqlQuery = `SELECT
-    user_id, uuid, email, password, activated_at, event_joined, rol
+    user_id, uuid, email, password, activated_at
     FROM users
     WHERE email = '${accountData.email}'`;
 
@@ -86,25 +86,21 @@ async function login(req, res, next) {
        */
       const payloadJwt = {
         uuid: userData.uuid,
-        rol: userData.rol // userData.role si viene de bbdd
+        rol: userData.rol // userData.rol será true o false
       };
-
-      /**
-       * TODO: hacer que el token pase el uuid y el email del user
-       *
-       */
 
       const jwtTokenExpiration = parseInt(
         process.env.AUTH_JWT_ACCESS_TOKEN_TTL,
         10
       );
 
-      console.log(process.env.AUTH_JWT_PASS);
       const token = jwt.sign(payloadJwt, process.env.AUTH_JWT_PASS, {
         expiresIn: jwtTokenExpiration
       });
       const response = {
         accessToken: token,
+        uuid: userData.uuid,
+        email: userData.email,
         expiresIn: jwtTokenExpiration
       };
 
