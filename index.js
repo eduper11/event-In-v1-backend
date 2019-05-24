@@ -18,6 +18,7 @@ app.use((err, req, res, next) => {
 
 app.use("/api", routes.accountRouter);
 app.use("/api", routes.eventRouter);
+app.use("/api", routes.userRouter);
 
 app.use((err, req, res, next) => {
   const { name: errorName } = err;

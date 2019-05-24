@@ -34,10 +34,12 @@ async function uploadAvatar(req, res, next) {
       secure_url: secureUrl,
     } = result;
     
+      /**
+       * TODO: crear la sqlUpdate, con su consecuente operación para updatear el avatarUrl
+       */
+      
     // actualizar user con la url del avatar
-    const filter = {
-      uuid,
-    };
+    const sqlUpdate = 
 
     const operation = {
       avatarUrl: secureUrl,

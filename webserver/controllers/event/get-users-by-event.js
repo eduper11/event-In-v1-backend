@@ -2,23 +2,23 @@
 
 const mysqlPool = require("../../../databases/mysql-pool");
 
-async function getUserProfile(req, res) {
-  const { uuid } = req.claims;
-
-  // const eventData = req.body;
+async function getUsersByEvent(req, res, next) {
   const connection = await mysqlPool.getConnection();
+  // const { uuid } = req.claims;
+  const eventData = req.body;
   const sqlQuery = `SELECT user_profile.uuid, full_name, avatarUrl, linkedin, github, twitter, instagram, description FROM user_profile
-WHERE uuid = '${uuid}';`;
+INNER JOIN user_events ON user_events.uuid = user_profile.uuid 
+WHERE event_id = '${eventData.event_id}';`;
 
   try {
-    const [userProfile] = await connection.query(sqlQuery);
+    const [usersList] = await connection.query(sqlQuery);
 
     connection.release();
 
-    return res.status(200).send(userProfile);
+    return res.status(200).send(usersList);
   } catch (e) {
     return res.status(500).send(e.message);
   }
 }
 
-module.exports = getUserProfile;
+module.exports = getUsersByEvent;
