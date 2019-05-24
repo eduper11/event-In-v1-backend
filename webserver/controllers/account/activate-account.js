@@ -2,6 +2,11 @@
 
 const mysqlPool = require("../../../databases/mysql-pool");
 
+/**
+ * función de activación de la cuenta. Valida el verification_code
+ * escribe en db
+ */
+
 async function activate(req, res, next) {
   const { verification_code: verificationCode } = req.query;
 

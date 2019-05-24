@@ -1,12 +1,35 @@
 "use strict";
 
+const Joi = require("joi");
 const mysqlPool = require("../../../databases/mysql-pool");
 
+async function validate(payload) {
+  const schema = {
+    name: Joi.string()
+      .min(3)
+      .max(128)
+      .required(),
+    company: Joi.string()
+      .max(128)
+      .allow(null),
+    finish_at: Joi.date().allow(null)
+  };
+
+  return Joi.validate(payload, schema);
+}
+
 async function updateEvent(req, res) {
-  const { uuid } = req.claims;
+  const { eventId } = req.query;
   const eventData = req.body;
-  const sqlQuery = `UPDATE events SET ?`;
-  const now = new Date();
+
+  try {
+    await validate(eventData);
+  } catch (e) {
+    return res.status(400).send(e);
+  }
+
+  const sqlQuery = `UPDATE events SET ? WHERE event_id = '${eventId}';`;
+  // const now = new Date();
 
   const connection = await mysqlPool.getConnection();
 

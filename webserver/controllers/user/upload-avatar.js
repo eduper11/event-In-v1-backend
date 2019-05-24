@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-const cloudinary = require('cloudinary');
-const UserModel = require('../../../models/user-model');
+const cloudinary = require("cloudinary");
+const mysqlPool = require("../../../databases/mysql-pool");
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARI_CLOUD_NAME,
-  api_key: process.env.CLOUDINARI_API_KEY,
-  api_secret: process.env.CLOUDINARI_API_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 async function uploadAvatar(req, res, next) {
@@ -17,43 +17,43 @@ async function uploadAvatar(req, res, next) {
     return res.status(400).send();
   }
 
-  cloudinary.v2.uploader.upload_stream({
-    resource_type: 'raw',
-    public_id: uuid,
-    width: 200,
-    height: 200,
-    format: 'jpg',
-    crop: 'limit',
-  }, async(err, result) => {
-    if (err) {
-      return res.status(400).send(err);
-    }
+  cloudinary.v2.uploader
+    .upload_stream(
+      {
+        resource_type: "raw",
+        public_id: uuid,
+        width: 200,
+        height: 200,
+        format: "jpg",
+        crop: "limit"
+      },
+      async (err, result) => {
+        if (err) {
+          return res.status(400).send(err);
+        }
 
-    const {
-      etag,
-      secure_url: secureUrl,
-    } = result;
-    
-      /**
-       * TODO: crear la sqlUpdate, con su consecuente operación para updatear el avatarUrl
-       */
-      
-    // actualizar user con la url del avatar
-    const sqlUpdate = 
+        const { etag, secure_url: secureUrl } = result;
 
-    const operation = {
-      avatarUrl: secureUrl,
-    };
+        // actualizamos user con la url del avatar
 
-    try {
-      await UserModel.updateOne(filter, operation);
-    } catch (e) {
-      return res.status(500).send(e.message);
-    }
+        const sqlUpdate = `UPDATE user_profile SET ? WHERE uuid = '${uuid}';`;
+        const connection = await mysqlPool.getConnection();
 
-    res.header('Location', secureUrl);
-    res.status(201).send();
-  }).end(file.buffer);
+        try {
+          const result = await connection.query(sqlUpdate, {
+            avatarUrl: secureUrl
+          });
+
+          connection.release();
+        } catch (e) {
+          return res.status(500).send(e.message);
+        }
+
+        res.header("Location", secureUrl);
+        res.status(201).send();
+      }
+    )
+    .end(file.buffer);
 }
 
 module.exports = uploadAvatar;

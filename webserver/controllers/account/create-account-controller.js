@@ -17,7 +17,10 @@ async function validateSchema(payload) {
    * fullName: String with 3 minimun characters and max 128
    */
   const schema = {
-    full_name: Joi.string().required(),
+    full_name: Joi.string()
+      .min(3)
+      .max(60)
+      .required(),
     email: Joi.string()
       .email({ minDomainAtoms: 2 })
       .required(),
@@ -28,22 +31,12 @@ async function validateSchema(payload) {
 
   return Joi.validate(payload, schema);
 }
-
-// /**
-//  * Create users wall
-//  * @param {String} uuid User identifier
-//  * @return {Object} wall Users wall
-//  */
-// async function createWall(uuid) {
-//   const data = {
-//     uuid,
-//     posts: []
-//   };
-
-//   const wall = await WallModel.create(data);
-
-//   return wall;
-// }
+/**
+ *
+ * @param {String} uuid
+ * @param {String} full_name
+ * añade en tabla user_profile uuid y full_name en el mismo momento de crear cuenta
+ */
 
 async function addUserProfile(uuid, full_name) {
   const fullName = full_name;
@@ -90,6 +83,13 @@ async function addVerificationCode(uuid) {
   return verificationCode;
 }
 
+/**
+ *
+ * @param {String} userEmail
+ * @param {String} verificationCode
+ * envía email automático para verificación de email (Sendgrid)
+ */
+
 async function sendEmailRegistration(userEmail, verificationCode) {
   const linkActivacion = `http://localhost:3000/api/account/activate?verification_code=${verificationCode}`;
   const msg = {
@@ -117,11 +117,10 @@ async function createAccount(req, res, next) {
   }
 
   /**
-   * Tenemos que insertar el usuario en la bbdd, para ello:
+   * Inserto el usuario en la bbdd, para ello:
    * 1. Generamos un uuid v4
-   * 2. Miramos la fecha actual created_at
-   * 3. Calculamos hash de la password que nos mandan para almacenarla
-   * de forma segura en la base de datos
+   * 2. creamo fecha actual created_at
+   * 3. hash de la password y almacenamiento seguro
    */
   const now = new Date();
   const securePassword = await bcrypt.hash(accountData.password, 10);
@@ -137,7 +136,7 @@ async function createAccount(req, res, next) {
 
   try {
     const resultado = await connection.query(sqlInsercion, {
-      uuid, // uuid: uuid,
+      uuid: uuid,
       email: accountData.email,
       password: securePassword,
       created_at: createdAt

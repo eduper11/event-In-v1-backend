@@ -2,7 +2,7 @@
 
 const mysqlPool = require("../../../databases/mysql-pool");
 
-async function getEventList(req, res, next) {
+async function getEventList(req, res) {
   const connection = await mysqlPool.getConnection();
   const { uuid } = req.claims;
   const sqlQuery = `SELECT events.event_id, name, owner, events.company, events.created_at, finish_at, finished FROM events

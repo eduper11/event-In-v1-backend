@@ -1,57 +1,50 @@
-'use strict';
+"use strict";
 
-const dot = require('dot-object');
-const Joi = require('joi');
-
-const UserModel = require('../../../models/user-model');
+const Joi = require("joi");
+const mysqlPool = require("../../../databases/mysql-pool");
 
 async function validate(payload) {
   const schema = {
-    fullName: Joi.string().min(3).max(128).required(),
-    preferences: Joi.object().keys({
-      isPublicProfile: Joi.bool().required(),
-      linkedIn: Joi.string().allow(null),
-      twitter: Joi.string().allow(null),
-      github: Joi.string().uri().allow(null),
-      description: Joi.string().allow(null),
-    }),
+    full_name: Joi.string()
+      .min(3)
+      .max(128)
+      .required(),
+    linkedIn: Joi.string().allow(null),
+    twitter: Joi.string().allow(null),
+    github: Joi.string()
+      .uri()
+      .allow(null),
+    description: Joi.string().allow(null)
   };
 
   return Joi.validate(payload, schema);
 }
 
-async function updateUserProfile(req, res, next) {
-  const userDataProfile = { ...req.body };
-  const { claims } = req;
+async function updateProfile(req, res) {
+  const { uuid } = req.claims;
+  const profileData = req.body;
+  const sqlQuery = `UPDATE user_profile SET ? WHERE uuid = '${uuid}';`;
+  const now = new Date();
+
+  const connection = await mysqlPool.getConnection();
 
   try {
-    await validate(userDataProfile);
+    const result = await connection.query(sqlQuery, {
+      full_name: profileData.full_name,
+      avatarUrl: profileData.avatarUrl,
+      linkedin: profileData.linkedin,
+      github: profileData.github,
+      twitter: profileData.twitter,
+      instagram: profileData.instagram,
+      description: profileData.description
+    });
+
+    connection.release();
+
+    return res.status(201).send();
   } catch (e) {
-    return res.status(400).send(e);
-  }
-
-  /**
-   * 2. Insertar los datos en mongo (actualizar los datos del usuario en mongo)
-   */
-  /*
-  const userDataProfileMongoose = {
-    fullName: userDataProfile.fullName,
-    'preferences.isPublicProfile': userDataProfile.preferences.isPublicProfile,
-    'preferences.linkedIn': userDataProfile.preferences.linkedIn,
-    'preferences.twitter': userDataProfile.preferences.twitter,
-    'preferences.github': userDataProfile.preferences.github,
-    'preferences.description': userDataProfile.preferences.description,
-  };
-  */
-
-  try {
-    const userDataProfileMongoose = dot.dot(userDataProfile);
-    const data = await UserModel.updateOne({ uuid: claims.uuid }, userDataProfileMongoose);
-    console.log('mongoose data', data);
-    return res.status(204).send();
-  } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(e.message);
   }
 }
 
-module.exports = updateUserProfile;
+module.exports = updateProfile;
