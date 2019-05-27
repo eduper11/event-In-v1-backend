@@ -4,9 +4,8 @@ const express = require("express");
 const multer = require("multer");
 const checkJwt = require("../controllers/session/check-jwt-token");
 const getUserProfile = require("../controllers/user/get-user-profile-controller");
-
-const updateProfile = require("../controllers/user/update-user-profile");
-const uploadAvatar = require("../controllers/user/upload-avatar");
+const updateProfile = require("../controllers/user/update-user-profile-controller");
+const uploadAvatar = require("../controllers/user/upload-avatar-controller");
 
 const upload = multer();
 const router = express.Router();

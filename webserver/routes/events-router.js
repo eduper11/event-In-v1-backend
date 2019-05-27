@@ -2,11 +2,11 @@
 
 const express = require("express");
 const checkJwt = require("../controllers/session/check-jwt-token");
-const getEventList = require("../controllers/event/select-event");
-const createEvent = require("../controllers/event/create-event");
-const joinToEvent = require("../controllers/event/join-event");
-const updateEvent = require("../controllers/event/update-event");
-const getUserByEvent = require("../controllers/event/get-users-by-event");
+const getEventList = require("../controllers/event/select-event-controller");
+const createEvent = require("../controllers/event/create-event-controller");
+const joinToEvent = require("../controllers/event/join-event-controller");
+const updateEvent = require("../controllers/event/update-event-controller");
+const getUserByEvent = require("../controllers/event/get-users-by-event-controller");
 const router = express.Router();
 
 router.get("/event/selectevent", checkJwt, getEventList);

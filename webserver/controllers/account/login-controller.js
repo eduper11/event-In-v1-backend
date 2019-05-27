@@ -37,25 +37,22 @@ async function login(req, res, next) {
   try {
     const connection = await mysqlPool.getConnection();
     const sqlQuery = `SELECT
-    user_id, uuid, email, password, activated_at
+    id, uuid, email, password, activated_at
     FROM users
     WHERE email = '${accountData.email}'`;
 
-    // const result = connection.query(sqlQuery)[0]
     const [result] = await connection.query(sqlQuery);
     if (result.length === 1) {
       const userData = result[0];
       /*
-      userData es algo como:
+      userData:
       {
-  user_id: 66,
+  id: 66,
   uuid: 'fb66233b-23b4-46ad-bdf3-51e65dbb2f8e',
   email: 'eduper123@yopmail.com',
   password:
    '$2b$10$lW7xAAZSs2TnaX7Ua.7LGOa4bHpBQ53ig2TWRdS.EMB8XihVcckrO',
-  activated_at: 2019-03-01T19:00:57.000Z 
-  event_joined: 23, 
-  rol: 1 ó 0 (boolean)
+  activated_at: 2019-03-01T19:00:57.000Z  
 }
   */
       if (!userData.activated_at) {
@@ -69,7 +66,7 @@ async function login(req, res, next) {
       }
 
       /**
-       * Paso3: La clave es valida?
+       * Paso3: validar password
        */
       const correctPass = await bcrypt.compare(
         accountData.password,
@@ -81,12 +78,12 @@ async function login(req, res, next) {
       }
 
       /**
-       * Paso 4: Generar token JWT con uuid + rol asociado al token
+       * token JWT con uuid + rol
        * La duración del token es de 1h (en variable de entorno)
        */
       const payloadJwt = {
         uuid: userData.uuid,
-        rol: userData.rol // userData.rol será true o false
+        rol: userData.rol // userData.rol será speaker o listener
       };
 
       const jwtTokenExpiration = parseInt(

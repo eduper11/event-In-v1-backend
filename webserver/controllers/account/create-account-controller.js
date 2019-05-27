@@ -6,6 +6,8 @@ const uuidV4 = require("uuid/v4");
 const sendgridMail = require("@sendgrid/mail");
 const mysqlPool = require("../../../databases/mysql-pool");
 
+const EmailAlreadyExist = require("../errors/existing-email-error");
+
 sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function validateSchema(payload) {
@@ -154,7 +156,12 @@ async function createAccount(req, res, next) {
     if (connection) {
       connection.release();
     }
-
+    if (e.code === "ER_DUP_ENTRY") {
+      const errorUserDuplicate = new EmailAlreadyExist(
+        "This email already exists"
+      );
+      return next(errorUserDuplicate);
+    }
     return res.status(500).send(e.message);
   }
 }

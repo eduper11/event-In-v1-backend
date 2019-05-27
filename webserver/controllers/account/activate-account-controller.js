@@ -4,7 +4,7 @@ const mysqlPool = require("../../../databases/mysql-pool");
 
 /**
  * función de activación de la cuenta. Valida el verification_code
- * escribe en db
+ * escribe en db datos de usuario
  */
 
 async function activate(req, res, next) {
@@ -31,28 +31,20 @@ AND activated_at IS NULL`;
     const result = await connection.query(sqlActivateQuery);
 
     if (result[0].affectedRows === 1) {
-      const sqlActivateUserQuery = `UPDATE users u
-      JOIN users_activation uv
-      ON u.uuid = uv.uuid
-      AND u.activated_at IS NULL
-      AND uv.verification_code = '${verificationCode}'
-      SET u.activated_at = uv.activated_at`;
+      const sqlActivateUserQuery = `UPDATE users
+      JOIN users_activation
+      ON users.uuid = users_activation.uuid
+      AND users.activated_at IS NULL
+      AND users_activation.verification_code = '${verificationCode}'
+      SET users.activated_at = users_activation.activated_at`;
 
       const resultActivateUser = await connection.query(sqlActivateUserQuery);
       if (resultActivateUser[0].affectedRows === 1) {
         connection.release();
         return res.send("account activated");
       }
-      /*
-      connection.query(sqlActivateUserQuery).then((resultActivateUSer) => {
-
-      }).catch((err) => {
-
-      });
-      */
     }
 
-    // algo no fue ok
     connection.release();
     return res.send("verification code invalid");
   } catch (e) {
