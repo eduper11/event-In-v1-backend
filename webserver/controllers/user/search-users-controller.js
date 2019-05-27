@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const Joi = require('joi');
-const UserModel = require('../../../models/user-model');
+const Joi = require("joi");
+const mysqlPool = require("../../../databases/mysql-pool");
 
 /**
  * Validate if search data is valid
@@ -10,7 +10,10 @@ const UserModel = require('../../../models/user-model');
  */
 async function validate(payload) {
   const schema = {
-    q: Joi.string().min(3).max(128).required(),
+    q: Joi.string()
+      .min(3)
+      .max(128)
+      .required()
   };
 
   return Joi.validate(payload, schema);
@@ -25,38 +28,14 @@ async function searchUsers(req, res, next) {
     return res.status(400).send(e);
   }
 
-  const op = {
-    $text: {
-      $search: q,
-    },
-  };
-
-  const scoreSearch = {
-    score: {
-      $meta: 'textScore',
-    },
-  };
+  const sqlQuery = `SELECT * FROM user_profile WHERE full_name LIKE '${q}%' ORDER BY full_name;`;
+  const connection = await mysqlPool.getConnection();
 
   try {
-    const users = await UserModel.find(op, scoreSearch).sort(scoreSearch).lean();
+    const [userProfileSearch] = await connection.query(sqlQuery);
+    connection.release();
 
-    const usersMinimumInfo = users.map((userResult) => {
-      const {
-        uuid,
-        fullName,
-        avatarUrl,
-        score,
-      } = userResult;
-
-      return {
-        uuid,
-        fullName,
-        avatarUrl,
-        score,
-      };
-    });
-
-    return res.send(usersMinimumInfo);
+    return res.send(userProfileSearch);
   } catch (e) {
     return res.status(500).send(e.message);
   }
