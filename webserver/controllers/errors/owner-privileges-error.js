@@ -5,7 +5,6 @@ class NotOwnerPrivilegesError extends Error {
     super();
     this.message = message;
     this.name = "NotOwnerPrivilegesError";
-    NotOwnerPrivilegesError.prototype.status = 401;
   }
 }
 
