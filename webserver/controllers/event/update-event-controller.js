@@ -15,9 +15,7 @@ async function validate(payload) {
       .max(128)
       .allow(null),
     finish_at: Joi.date().allow(null),
-    youtube_streaming_url: Joi.string()
-      .uri()
-      .allow(null)
+    youtube_streaming_url: Joi.string().allow(null)
   };
 
   return Joi.validate(payload, schema);
