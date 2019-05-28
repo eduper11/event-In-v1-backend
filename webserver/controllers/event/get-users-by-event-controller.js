@@ -7,8 +7,8 @@ async function getUsersByEvent(req, res, next) {
   // const { uuid } = req.claims;
   const { eventId } = req.query;
   const sqlQuery = `SELECT user_profile.uuid, full_name, avatarUrl, linkedin, github, twitter, instagram, description FROM user_profile
-INNER JOIN user_events ON user_events.uuid = user_profile.uuid 
-WHERE event_id = '${eventId}';`;
+JOIN user_events ON user_events.uuid = user_profile.uuid 
+WHERE event.id = '${eventId}';`;
 
   try {
     const [usersList] = await connection.query(sqlQuery);

@@ -3,9 +3,12 @@
 const mysqlPool = require("../../../databases/mysql-pool");
 
 async function getEventList(req, res) {
-  const connection = await mysqlPool.getConnection();
   const { uuid } = req.claims;
-  const sqlQuery = `SELECT events.id, name, owner_uuid, events.company, events.created_at, finish_at, youtube_streaming_url FROM events`;
+
+  const connection = await mysqlPool.getConnection();
+  const sqlQuery = `SELECT id, name, owner_uuid, company, created_at, finish_at, youtube_streaming_url FROM events
+  JOIN user_events ON id = event_id
+  WHERE uuid != '${uuid}'`;
 
   try {
     const [eventList] = await connection.query(sqlQuery);
