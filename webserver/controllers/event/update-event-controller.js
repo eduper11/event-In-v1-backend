@@ -26,21 +26,6 @@ async function updateEvent(req, res, next) {
   const eventId = req.query.event_id;
   const eventData = req.body;
 
-  // const sqlAuxiliar = `SELECT owner_uuid FROM events WHERE event_Id = '${eventId}';`;
-
-  // try {
-  //   const [dataOwner] = await connection.query(sqlAuxiliar);
-
-  //   connection.release();
-
-  //   if (uuid !== dataOwner) {
-  //     const notOwnerPrivilegesError = new NotOwnerPrivilegesError();
-  //     return next(notOwnerPrivilegesError);
-  //   }
-  // } catch (e) {
-  //   return res.status(401).send(e);
-  // }
-
   try {
     await validate(eventData);
   } catch (e) {
@@ -80,21 +65,5 @@ async function updateEvent(req, res, next) {
     return res.status(500).send(e.message);
   }
 }
-// const sqlUpdate = `UPDATE events SET ? WHERE events.id = '${eventId}';`;
-
-//   try {
-//     const result = await connection.query(sqlUpdate, {
-//       name: eventData.name,
-//       company: eventData.company,
-//       finish_at: eventData.finish_at
-//     });
-
-//     connection.release();
-
-//     return res.status(201).send();
-//   } catch (e) {
-//     return res.status(500).send(e.message);
-//   }
-// }
 
 module.exports = updateEvent;
