@@ -12,7 +12,8 @@ async function validateData(payload) {
     company: Joi.string()
       .max(128)
       .allow(null),
-    finish_at: Joi.date().allow(null)
+    finish_at: Joi.date().allow(null),
+    youtube_streaming_url: 
   };
 
   return Joi.validate(payload, schema);

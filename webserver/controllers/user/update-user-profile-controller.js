@@ -9,9 +9,16 @@ async function validate(payload) {
       .min(3)
       .max(128)
       .allow(null),
-    linkedIn: Joi.string().allow(null),
-    twitter: Joi.string().allow(null),
+    linkedIn: Joi.string()
+      .uri()
+      .allow(null),
     github: Joi.string()
+      .uri()
+      .allow(null),
+    twitter: Joi.string()
+      .uri()
+      .allow(null),
+    instagram: Joi.string()
       .uri()
       .allow(null),
     description: Joi.string().allow(null)
