@@ -23,7 +23,7 @@ async function validate(payload) {
 
 async function updateEvent(req, res, next) {
   const { uuid } = req.claims;
-  const { eventId } = req.query;
+  const eventId = req.query.event_id;
   const eventData = req.body;
 
   // const sqlAuxiliar = `SELECT owner_uuid FROM events WHERE event_Id = '${eventId}';`;
@@ -52,6 +52,7 @@ async function updateEvent(req, res, next) {
     const connection = await mysqlPool.getConnection();
     const [dataOwner] = await connection.query(sqlAuxiliar);
     const { owner_uuid } = dataOwner[0];
+
     connection.release();
 
     if (owner_uuid === uuid) {
@@ -69,7 +70,8 @@ async function updateEvent(req, res, next) {
       return res.status(201).send();
     } else {
       const notOwnerPrivilegesError = new NotOwnerPrivilegesError(
-        "You can not modify this event: you are not the owner"
+        "You can not modify this event: you are not the owner",
+        "401"
       );
 
       return next(notOwnerPrivilegesError);
