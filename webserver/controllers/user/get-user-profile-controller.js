@@ -5,7 +5,6 @@ const mysqlPool = require("../../../databases/mysql-pool");
 async function getUserProfile(req, res) {
   const { uuid } = req.claims;
 
-  // const eventData = req.body;
   const connection = await mysqlPool.getConnection();
   const sqlQuery = `SELECT user_profile.uuid, full_name, avatarUrl, linkedin, github, twitter, instagram, description FROM user_profile
 WHERE uuid = '${uuid}';`;

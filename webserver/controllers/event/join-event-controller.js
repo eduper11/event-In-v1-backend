@@ -3,10 +3,9 @@
 const mysqlPool = require("../../../databases/mysql-pool");
 
 async function joinToEvent(req, res, next) {
-  const eventData = req.body;
+  const eventData = req.query;
   const { uuid } = req.claims;
   const now = new Date();
-  console.log(now);
 
   const connection = await mysqlPool.getConnection();
   const sqlInsert = `INSERT INTO user_events SET ?`;

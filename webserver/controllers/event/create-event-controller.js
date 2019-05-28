@@ -1,10 +1,33 @@
 "use strict";
 
 const mysqlPool = require("../../../databases/mysql-pool");
+const Joi = require("joi");
+
+async function validateData(payload) {
+  const schema = {
+    name: Joi.string()
+      .min(3)
+      .max(128)
+      .required(),
+    company: Joi.string()
+      .max(128)
+      .allow(null),
+    finish_at: Joi.date().allow(null)
+  };
+
+  return Joi.validate(payload, schema);
+}
 
 async function createEvent(req, res) {
-  const { uuid } = req.claims;
   const eventData = req.body;
+
+  try {
+    await validateData(eventData);
+  } catch (e) {
+    return res.status(400).send(e);
+  }
+
+  const { uuid } = req.claims;
   const sqlQuery = `INSERT INTO events SET ?`;
   const now = new Date();
 
@@ -13,7 +36,7 @@ async function createEvent(req, res) {
   try {
     const result = await connection.query(sqlQuery, {
       name: eventData.name,
-      owner: uuid,
+      owner_uuid: uuid,
       company: eventData.company,
       created_at: now
         .toISOString()
@@ -24,7 +47,7 @@ async function createEvent(req, res) {
 
     connection.release();
 
-    return res.status(201).send();
+    return res.status(201).send(result[0]);
   } catch (e) {
     return res.status(500).send(e.message);
   }

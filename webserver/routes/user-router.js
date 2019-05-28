@@ -11,14 +11,9 @@ const searchUser = require("../controllers/user/search-users-controller");
 const upload = multer();
 const router = express.Router();
 
-router.get("/user/getuserprofile", checkJwt, getUserProfile);
-router.put("/user/updateprofile", checkJwt, updateProfile);
-router.post(
-  "/user/uploadavatar",
-  checkJwt,
-  upload.single("avatar"),
-  uploadAvatar
-);
-router.get("/user/searchuser", checkJwt, searchUser);
+router.get("/user/profile", checkJwt, getUserProfile);
+router.put("/user/profile", checkJwt, updateProfile);
+router.post("/user/avatar", checkJwt, upload.single("avatar"), uploadAvatar);
+router.get("/user/search", checkJwt, searchUser);
 
 module.exports = router;

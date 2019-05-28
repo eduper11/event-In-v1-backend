@@ -9,10 +9,10 @@ const updateEvent = require("../controllers/event/update-event-controller");
 const getUserByEvent = require("../controllers/event/get-users-by-event-controller");
 const router = express.Router();
 
-router.get("/event/select", checkJwt, getEventList);
-router.post("/event/create", checkJwt, createEvent);
-router.post("/event/jointo", checkJwt, joinToEvent);
-router.put("/event/update", checkJwt, updateEvent);
+router.get("/event", checkJwt, getEventList);
+router.post("/event", checkJwt, createEvent);
+router.post("/event/join", checkJwt, joinToEvent);
+router.put("/event", checkJwt, updateEvent);
 router.get("/event/users", checkJwt, getUserByEvent);
 
 module.exports = router;

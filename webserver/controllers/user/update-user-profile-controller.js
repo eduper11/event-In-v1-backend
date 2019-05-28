@@ -8,7 +8,7 @@ async function validate(payload) {
     full_name: Joi.string()
       .min(3)
       .max(128)
-      .required(),
+      .allow(null),
     linkedIn: Joi.string().allow(null),
     twitter: Joi.string().allow(null),
     github: Joi.string()
@@ -21,10 +21,18 @@ async function validate(payload) {
 }
 
 async function updateProfile(req, res) {
-  const { uuid } = req.claims;
   const profileData = req.body;
+
+  try {
+    await validateData(profileData);
+  } catch (e) {
+    return res.status(400).send(e);
+  }
+
+  const { uuid } = req.claims;
   const sqlQuery = `UPDATE user_profile SET ? WHERE uuid = '${uuid}';`;
-  const now = new Date();
+
+  // const now = new Date();
 
   const connection = await mysqlPool.getConnection();
 

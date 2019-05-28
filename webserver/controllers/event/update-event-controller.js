@@ -10,7 +10,7 @@ async function validate(payload) {
     name: Joi.string()
       .min(3)
       .max(128)
-      .required(),
+      .allow(null),
     company: Joi.string()
       .max(128)
       .allow(null),
@@ -59,7 +59,8 @@ async function updateEvent(req, res, next) {
       const result = await connection.query(sqlUpdate, {
         name: eventData.name,
         company: eventData.company,
-        finish_at: eventData.finish_at
+        finish_at: eventData.finish_at,
+        youtube_streaming_url: eventData.youtube_streaming_url
       });
 
       connection.release();
