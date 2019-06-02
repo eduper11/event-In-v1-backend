@@ -18,11 +18,12 @@ process.on('unhandledRejection', err => {
 const app = express();
 app.use(bodyParser.json());
 
+/**
+ * Enable CORS with a origin whitelist of valid domains
+ */
 app.use(cors());
 
-// /**
-//  * Enable CORS with a origin whitelist of valid domains
-//  */
+//
 // app.use((req, res, next) => {
 //   const accessControlAllowMethods = [
 //     'GET',
