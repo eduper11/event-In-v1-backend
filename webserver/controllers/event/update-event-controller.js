@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-const Joi = require("joi");
-const mysqlPool = require("../../../databases/mysql-pool");
+const Joi = require('joi');
+const mysqlPool = require('../../../databases/mysql-pool');
 
-const NotOwnerPrivilegesError = require("../errors/owner-privileges-error");
+const NotOwnerPrivilegesError = require('../errors/owner-privileges-error');
 
 async function validate(payload) {
   const schema = {
@@ -31,6 +31,7 @@ async function updateEvent(req, res, next) {
   } catch (e) {
     return res.status(400).send(e);
   }
+
   const sqlAuxiliar = `SELECT owner_uuid FROM events WHERE id = '${eventId}';`;
 
   try {
@@ -55,8 +56,8 @@ async function updateEvent(req, res, next) {
       return res.status(201).send();
     } else {
       const notOwnerPrivilegesError = new NotOwnerPrivilegesError(
-        "You can not modify this event: you are not the owner",
-        "401"
+        'You can not modify this event: you are not the owner',
+        401
       );
 
       return next(notOwnerPrivilegesError);

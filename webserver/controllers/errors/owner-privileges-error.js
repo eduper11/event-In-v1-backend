@@ -1,10 +1,11 @@
-"use strict";
+'use strict';
 
 class NotOwnerPrivilegesError extends Error {
   constructor(message, status) {
     super();
     this.message = message;
-    this.name = "NotOwnerPrivilegesError";
+    this.name = 'NotOwnerPrivilegesError';
+    this.status = status;
   }
 }
 
