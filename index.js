@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const express = require('express');
 const routes = require('./webserver/routes');
 const mysqlPool = require('./databases/mysql-pool');
@@ -17,46 +18,48 @@ process.on('unhandledRejection', err => {
 const app = express();
 app.use(bodyParser.json());
 
-/**
- * Enable CORS with a origin whitelist of valid domains
- */
-app.use((req, res, next) => {
-  const accessControlAllowMethods = [
-    'GET',
-    'POST',
-    'DELETE',
-    'HEAD',
-    'PATCH',
-    'PUT',
-    'OPTIONS'
-  ];
+app.use(cors());
 
-  const accessControlAllowHeaders = [
-    'Origin',
-    'X-Requested-With',
-    'Content-Type',
-    'Accept',
-    'Accept-Version',
-    'Authorization',
-    'Location'
-  ];
+// /**
+//  * Enable CORS with a origin whitelist of valid domains
+//  */
+// app.use((req, res, next) => {
+//   const accessControlAllowMethods = [
+//     'GET',
+//     'POST',
+//     'DELETE',
+//     'HEAD',
+//     'PATCH',
+//     'PUT',
+//     'OPTIONS'
+//   ];
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header(
-    'Access-Control-Allow-Methods',
-    accessControlAllowMethods.join(',')
-  );
-  res.header(
-    'Access-Control-Allow-Headers',
-    accessControlAllowHeaders.join(',')
-  );
-  res.header(
-    'Access-Control-Expose-Headers',
-    accessControlAllowHeaders.join(',')
-  );
-  next();
-});
+//   const accessControlAllowHeaders = [
+//     'Origin',
+//     'X-Requested-With',
+//     'Content-Type',
+//     'Accept',
+//     'Accept-Version',
+//     'Authorization',
+//     'Location'
+//   ];
+
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Credentials', 'true');
+//   res.header(
+//     'Access-Control-Allow-Methods',
+//     accessControlAllowMethods.join(',')
+//   );
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     accessControlAllowHeaders.join(',')
+//   );
+//   res.header(
+//     'Access-Control-Expose-Headers',
+//     accessControlAllowHeaders.join(',')
+//   );
+//   next();
+// });
 
 app.use((err, req, res, next) => {
   console.error(err);
