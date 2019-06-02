@@ -21,46 +21,6 @@ app.use(bodyParser.json());
 /**
  * Enable CORS with a origin whitelist of valid domains
  */
-app.use(cors());
-
-//
-// app.use((req, res, next) => {
-//   const accessControlAllowMethods = [
-//     'GET',
-//     'POST',
-//     'DELETE',
-//     'HEAD',
-//     'PATCH',
-//     'PUT',
-//     'OPTIONS'
-//   ];
-
-//   const accessControlAllowHeaders = [
-//     'Origin',
-//     'X-Requested-With',
-//     'Content-Type',
-//     'Accept',
-//     'Accept-Version',
-//     'Authorization',
-//     'Location'
-//   ];
-
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   res.header(
-//     'Access-Control-Allow-Methods',
-//     accessControlAllowMethods.join(',')
-//   );
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     accessControlAllowHeaders.join(',')
-//   );
-//   res.header(
-//     'Access-Control-Expose-Headers',
-//     accessControlAllowHeaders.join(',')
-//   );
-//   next();
-// });
 
 app.use((err, req, res, next) => {
   console.error(err);
@@ -68,6 +28,8 @@ app.use((err, req, res, next) => {
     error: `Body parser: ${err.message}`
   });
 });
+
+app.use(cors());
 
 app.use('/api', routes.accountRouter);
 app.use('/api', routes.eventRouter);
