@@ -93,9 +93,9 @@ async function addVerificationCode(uuid) {
  */
 
 async function sendEmailRegistration(userEmail, verificationCode) {
-  const linkActivacion = `'${
+  const linkActivacion = `${
     process.env.API_BASE_URL
-  }'/account/activate?verification_code=${verificationCode}`;
+  }/account/activate?verification_code=${verificationCode}`;
   const msg = {
     to: userEmail,
     from: {
