@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 
-const bcrypt = require("bcrypt");
-const Joi = require("joi");
-const uuidV4 = require("uuid/v4");
-const sendgridMail = require("@sendgrid/mail");
-const mysqlPool = require("../../../databases/mysql-pool");
+const bcrypt = require('bcrypt');
+const Joi = require('joi');
+const uuidV4 = require('uuid/v4');
+const sendgridMail = require('@sendgrid/mail');
+const mysqlPool = require('../../../databases/mysql-pool');
 
-const EmailAlreadyExist = require("../errors/existing-email-error");
+const EmailAlreadyExist = require('../errors/existing-email-error');
 
 sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -70,8 +70,8 @@ async function addVerificationCode(uuid) {
   const createdAt = now
     .toISOString()
     .substring(0, 19)
-    .replace("T", " ");
-  const sqlQuery = "INSERT INTO users_activation SET ?";
+    .replace('T', ' ');
+  const sqlQuery = 'INSERT INTO users_activation SET ?';
   const connection = await mysqlPool.getConnection();
 
   await connection.query(sqlQuery, {
@@ -93,15 +93,17 @@ async function addVerificationCode(uuid) {
  */
 
 async function sendEmailRegistration(userEmail, verificationCode) {
-  const linkActivacion = `http://localhost:3000/api/account/activate?verification_code=${verificationCode}`;
+  const linkActivacion = `'${
+    process.env.API_BASE_URL
+  }'/account/activate?verification_code=${verificationCode}`;
   const msg = {
     to: userEmail,
     from: {
-      email: "event_in@yopmail.com",
-      name: "Event-In"
+      email: 'event_in@yopmail.com',
+      name: 'Eduardo, from Event-In'
     },
-    subject: "Activation code for your account",
-    text: "Meet all people in your event",
+    subject: 'Activation code for your account',
+    text: 'Meet all people in your event',
     html: `To confirm the account press <a href="${linkActivacion}">here</a>`
   };
 
@@ -130,11 +132,11 @@ async function createAccount(req, res, next) {
   const createdAt = now
     .toISOString()
     .substring(0, 19)
-    .replace("T", " ");
+    .replace('T', ' ');
 
   const connection = await mysqlPool.getConnection();
 
-  const sqlInsercion = "INSERT INTO users SET ?";
+  const sqlInsercion = 'INSERT INTO users SET ?';
 
   try {
     const resultado = await connection.query(sqlInsercion, {
@@ -156,9 +158,9 @@ async function createAccount(req, res, next) {
     if (connection) {
       connection.release();
     }
-    if (e.code === "ER_DUP_ENTRY") {
+    if (e.code === 'ER_DUP_ENTRY') {
       const errorUserDuplicate = new EmailAlreadyExist(
-        "This email already exists"
+        'This email already exists'
       );
       return next(errorUserDuplicate);
     }
