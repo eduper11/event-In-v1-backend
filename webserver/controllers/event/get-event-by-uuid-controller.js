@@ -7,7 +7,8 @@ async function getEventList(req, res) {
   const { uuid } = req.claims;
   const sqlQuery = `SELECT events.id, name, owner_uuid, events.company, events.created_at, finish_at FROM events
 INNER JOIN user_events ON events.id = user_events.event_id 
-WHERE uuid = '${uuid}';`;
+WHERE uuid = '${uuid}' 
+ORDER BY name`;
 
   try {
     const [eventList] = await connection.query(sqlQuery);
