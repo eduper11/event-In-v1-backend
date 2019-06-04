@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const mysqlPool = require("../../../databases/mysql-pool");
+const mysqlPool = require('../../../databases/mysql-pool');
 
 /**
  * función de activación de la cuenta.
@@ -11,8 +11,8 @@ async function activate(req, res, next) {
 
   if (!verificationCode) {
     return res.status(400).json({
-      message: "invalid verification code",
-      target: "verification_code"
+      message: 'invalid verification code',
+      target: 'verification_code'
     });
   }
 
@@ -21,7 +21,7 @@ async function activate(req, res, next) {
 SET activated_at = '${now
     .toISOString()
     .substring(0, 19)
-    .replace("T", " ")}'
+    .replace('T', ' ')}'
 WHERE verification_code='${verificationCode}'
 AND activated_at IS NULL`;
 
@@ -40,12 +40,12 @@ AND activated_at IS NULL`;
       const resultActivateUser = await connection.query(sqlActivateUserQuery);
       if (resultActivateUser[0].affectedRows === 1) {
         connection.release();
-        return res.send("account activated");
+        return res.redirect(`${process.env.HTTP_FRONT_DOMAIN}/activation`);
       }
     }
 
     connection.release();
-    return res.send("verification code invalid");
+    return res.send('verification code invalid');
   } catch (e) {
     return res.status(500).send(e.message);
   }
