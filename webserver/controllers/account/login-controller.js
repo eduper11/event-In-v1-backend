@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const mysqlPool = require('../../../databases/mysql-pool');
 
 const AccountNotActivatedError = require('../errors/account-not-activated-error');
+const UserNotFoundError = require('../errors/user-not-found-error');
 
 async function validateData(payload) {
   const schema = {
@@ -103,8 +104,9 @@ async function login(req, res, next) {
 
       return res.status(200).json(response);
     }
-
-    return res.status(404).send();
+    const userNotFoundError = new UserNotFoundError('User not found', 404);
+    return next(userNotFoundError);
+    // return res.status(404).send();
   } catch (e) {
     return res.status(500).send(e.message);
   }
