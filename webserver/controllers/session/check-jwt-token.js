@@ -1,6 +1,7 @@
-"use strict";
+'use strict';
 
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const NotAuthorizedError = require('../errors/not-authorized-error');
 
 const { AUTH_JWT_PASS: authJwtSecret } = process.env;
 
@@ -8,12 +9,13 @@ function checkJwtToken(req, res, next) {
   // checkeará el token jwt que viene en el header como authorization
   const { authorization } = req.headers;
   if (!authorization) {
-    return res.status(401).send();
+    const notAuthorizedError = new NotAuthorizedError('Session expired', 401);
+    return next(notAuthorizedError);
   }
 
-  //   if (!authorization.startsWith('JWT '))
-  const [prefix, token] = authorization.split(" "); // [JWT, xxxx]
-  if (prefix !== "Bearer") {
+  //   if (!authorization.startsWith('Bearer '))
+  const [prefix, token] = authorization.split(' ');
+  if (prefix !== 'Bearer') {
     return res.status(401).send();
   }
 
@@ -31,7 +33,7 @@ function checkJwtToken(req, res, next) {
 
     return next();
   } catch (e) {
-    return res.status(401).send("4");
+    return res.status(401).send('4');
   }
 }
 
