@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
-const bcrypt = require("bcrypt");
-const Joi = require("joi");
-const jwt = require("jsonwebtoken");
-const mysqlPool = require("../../../databases/mysql-pool");
+const bcrypt = require('bcrypt');
+const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+const mysqlPool = require('../../../databases/mysql-pool');
 
-const AccountNotActivatedError = require("../errors/account-not-activated-error");
+const AccountNotActivatedError = require('../errors/account-not-activated-error');
 
 async function validateData(payload) {
   const schema = {
@@ -57,7 +57,8 @@ async function login(req, res, next) {
   */
       if (!userData.activated_at) {
         const accountNotActivated = new AccountNotActivatedError(
-          "you need to confirm the verification link"
+          'you need to confirm the verification link',
+          401
         );
 
         // throw accountNotActivated; // throw new AccountNotActivatedError()

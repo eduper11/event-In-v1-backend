@@ -160,7 +160,8 @@ async function createAccount(req, res, next) {
     }
     if (e.code === 'ER_DUP_ENTRY') {
       const errorUserDuplicate = new EmailAlreadyExist(
-        'This email already exists'
+        'This email already exists',
+        403
       );
       return next(errorUserDuplicate);
     }

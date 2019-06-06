@@ -36,19 +36,21 @@ app.use('/api', routes.eventRouter);
 app.use('/api', routes.userRouter);
 
 app.use((err, req, res, next) => {
-  const { name: errorName } = err;
+  const { name } = err;
 
-  if (errorName === 'AccountNotActivatedError') {
-    return res.status(403).send({
-      message: err.message
-    });
-  }
+  // if (errorName === 'AccountNotActivatedError') {
+  //   return res.status(403).send({
+  //     message: err.message
+  //   });
+  // }
 
-  if (errorName !== 'Error') {
+  if (name !== 'Error') {
     const { message, status } = err;
 
     return res.status(status).send({
-      message
+      name,
+      message,
+      status
     });
   }
 

@@ -1,10 +1,11 @@
-"use strict";
+'use strict';
 
 class AccountNotActivatedError extends Error {
-  constructor(message) {
+  constructor(message, status) {
     super();
     this.message = message;
-    this.name = "AccountNotActivatedError";
+    this.name = 'AccountNotActivatedError';
+    this.status = status;
   }
 }
 
