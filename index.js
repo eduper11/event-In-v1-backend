@@ -46,7 +46,6 @@ app.use((err, req, res, next) => {
 
   if (name !== 'Error') {
     const { message, status } = err;
-    console.error(err);
     return res.status(status).send({
       name,
       message,
