@@ -2,7 +2,7 @@
 
 const mysqlPool = require('../../../databases/mysql-pool');
 
-async function getEventList(req, res) {
+async function getEventByUuid(req, res) {
   const connection = await mysqlPool.getConnection();
   const { uuid } = req.claims;
   const sqlQuery = `SELECT events.id, name, owner_uuid, events.company, events.created_at, finish_at FROM events
@@ -21,4 +21,4 @@ ORDER BY name`;
   }
 }
 
-module.exports = getEventList;
+module.exports = getEventByUuid;

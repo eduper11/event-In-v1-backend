@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-const mysqlPool = require("../../../databases/mysql-pool");
+const mysqlPool = require('../../../databases/mysql-pool');
 
-async function getEventList(req, res) {
+async function getEventNotJoined(req, res) {
   const { uuid } = req.claims;
 
   const connection = await mysqlPool.getConnection();
@@ -21,4 +21,4 @@ async function getEventList(req, res) {
   }
 }
 
-module.exports = getEventList;
+module.exports = getEventNotJoined;
