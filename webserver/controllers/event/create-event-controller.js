@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-const mysqlPool = require("../../../databases/mysql-pool");
-const Joi = require("joi");
+const mysqlPool = require('../../../databases/mysql-pool');
+const Joi = require('joi');
 
 async function validateData(payload) {
   const schema = {
@@ -11,8 +11,8 @@ async function validateData(payload) {
       .required(),
     company: Joi.string()
       .max(128)
-      .allow(null),
-    finish_at: Joi.date().allow(null),
+      .required(),
+    finish_at: Joi.date().required(),
     youtube_streaming_url: Joi.string()
       .uri()
       .allow(null)
@@ -44,7 +44,7 @@ async function createEvent(req, res) {
       created_at: now
         .toISOString()
         .substring(0, 19)
-        .replace("T", " "),
+        .replace('T', ' '),
       finish_at: eventData.finish_at
     });
 
