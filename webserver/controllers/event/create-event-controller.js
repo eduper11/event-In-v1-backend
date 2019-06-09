@@ -14,7 +14,7 @@ async function validateData(payload) {
       .required(),
     finish_at: Joi.date().required(),
     youtube_streaming_url: Joi.string()
-      .uri()
+      .uri({ allowRelative: true })
       .allow(null)
   };
 
