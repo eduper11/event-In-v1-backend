@@ -45,7 +45,8 @@ async function createEvent(req, res) {
         .toISOString()
         .substring(0, 19)
         .replace('T', ' '),
-      finish_at: eventData.finish_at
+      finish_at: eventData.finish_at,
+      youtube_streaming_url: eventData.youtube_streaming_url
     });
 
     connection.release();
