@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const mysqlPool = require("../../../databases/mysql-pool");
+const mysqlPool = require('../../../databases/mysql-pool');
 
 async function joinToEvent(req, res, next) {
   const eventData = req.query;
@@ -18,8 +18,11 @@ async function joinToEvent(req, res, next) {
       last_update: now
         .toISOString()
         .substring(0, 19)
-        .replace("T", " ")
+        .replace('T', ' ')
     });
+
+    connection.release();
+
     return res.status(201).send();
   } catch (e) {
     return res.status(500).send(e.message);
