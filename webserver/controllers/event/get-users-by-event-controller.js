@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
-const mysqlPool = require("../../../databases/mysql-pool");
+const mysqlPool = require('../../../databases/mysql-pool');
 
 async function getUsersByEvent(req, res, next) {
   const connection = await mysqlPool.getConnection();
   // const { uuid } = req.claims;
-  const { eventId } = req.query;
+  const { event_id } = req.query;
   const sqlQuery = `SELECT user_profile.uuid, full_name, avatarUrl, linkedin, github, twitter, instagram, description FROM user_profile
 JOIN user_events ON user_events.uuid = user_profile.uuid 
-WHERE event.id = '${eventId}';`;
+WHERE event_id = '${event_id}';`;
 
   try {
     const [usersList] = await connection.query(sqlQuery);

@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 
-const mysqlPool = require("../../../databases/mysql-pool");
+const mysqlPool = require('../../../databases/mysql-pool');
 
 async function getUserProfile(req, res) {
   const { uuid } = req.claims;
 
   const connection = await mysqlPool.getConnection();
-  const sqlQuery = `SELECT user_profile.uuid, full_name, avatarUrl, linkedin, github, twitter, instagram, description FROM user_profile
+  const sqlQuery = `SELECT uuid, full_name, avatarUrl, linkedin, github, twitter, instagram, description FROM user_profile
 WHERE uuid = '${uuid}';`;
 
   try {
