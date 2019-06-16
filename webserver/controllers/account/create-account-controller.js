@@ -11,13 +11,6 @@ const EmailAlreadyExist = require('../errors/existing-email-error');
 sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function validateSchema(payload) {
-  /**
-   * TODO: Fill email, password and full name rules to be (all fields are mandatory):
-   *  email: Valid email
-   *  password: Letters (upper and lower case) and number
-   *    Minimun 3 and max 30 characters, using next regular expression: /^[a-zA-Z0-9]{3,30}$/
-   * fullName: String with 3 minimun characters and max 128
-   */
   const schema = {
     full_name: Joi.string()
       .min(3)

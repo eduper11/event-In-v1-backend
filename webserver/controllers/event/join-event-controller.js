@@ -3,7 +3,7 @@
 const mysqlPool = require('../../../databases/mysql-pool');
 
 async function joinToEvent(req, res, next) {
-  const eventData = req.query;
+  const { event_id, rol } = req.query;
   const { uuid } = req.claims;
   const now = new Date();
 
@@ -13,15 +13,15 @@ async function joinToEvent(req, res, next) {
   try {
     const result = await connection.query(sqlInsert, {
       uuid: uuid,
-      event_id: eventData.event_id,
-      rol: eventData.rol,
+      event_id: event_id,
+      rol: rol,
       last_update: now
         .toISOString()
         .substring(0, 19)
         .replace('T', ' ')
     });
 
-    connection.release();
+    connection.release(result);
 
     return res.status(201).send();
   } catch (e) {
