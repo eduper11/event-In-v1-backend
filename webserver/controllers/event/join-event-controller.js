@@ -3,7 +3,7 @@
 const mysqlPool = require('../../../databases/mysql-pool');
 
 async function joinToEvent(req, res, next) {
-  const { event_id, rol } = req.query;
+  const { event_id, rol } = req.body;
   const { uuid } = req.claims;
   const now = new Date();
 
