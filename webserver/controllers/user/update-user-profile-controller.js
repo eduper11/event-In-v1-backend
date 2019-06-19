@@ -1,25 +1,33 @@
-"use strict";
+'use strict';
 
-const Joi = require("joi");
-const mysqlPool = require("../../../databases/mysql-pool");
+const Joi = require('joi');
+const mysqlPool = require('../../../databases/mysql-pool');
 
-async function validate(payload) {
+async function validateData(payload) {
   const schema = {
     full_name: Joi.string()
       .min(3)
       .max(128)
-      .allow(null),
+      .required(),
     linkedIn: Joi.string()
-      .uri()
+      .uri({
+        scheme: ['http', 'https']
+      })
       .allow(null),
     github: Joi.string()
-      .uri()
+      .uri({
+        scheme: ['http', 'https']
+      })
       .allow(null),
     twitter: Joi.string()
-      .uri()
+      .uri({
+        scheme: ['http', 'https']
+      })
       .allow(null),
     instagram: Joi.string()
-      .uri()
+      .uri({
+        scheme: ['http', 'https']
+      })
       .allow(null),
     description: Joi.string().allow(null)
   };
@@ -46,7 +54,6 @@ async function updateProfile(req, res) {
   try {
     const result = await connection.query(sqlQuery, {
       full_name: profileData.full_name,
-      avatarUrl: profileData.avatarUrl,
       linkedin: profileData.linkedin,
       github: profileData.github,
       twitter: profileData.twitter,
