@@ -13,7 +13,7 @@ async function validateData(payload) {
       .max(128)
       .required(),
     finish_at: Joi.date().required(),
-    youtube_streaming_url: Joi.string()
+    streaming_url: Joi.string()
       .uri({ allowRelative: true })
       .allow(null)
   };
@@ -46,7 +46,7 @@ async function createEvent(req, res) {
         .substring(0, 19)
         .replace('T', ' '),
       finish_at: eventData.finish_at,
-      youtube_streaming_url: eventData.youtube_streaming_url
+      streaming_url: eventData.streaming_url
     });
 
     connection.release();

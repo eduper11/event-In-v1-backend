@@ -15,7 +15,7 @@ async function validate(payload) {
       .max(128)
       .allow(null),
     finish_at: Joi.date().allow(null),
-    youtube_streaming_url: Joi.string().allow(null)
+    streaming_url: Joi.string().allow(null)
   };
 
   return Joi.validate(payload, schema);
@@ -48,7 +48,7 @@ async function updateEvent(req, res, next) {
         name: eventData.name,
         company: eventData.company,
         finish_at: eventData.finish_at,
-        youtube_streaming_url: eventData.youtube_streaming_url
+        streaming_url: eventData.streaming_url
       });
 
       connection.release();
