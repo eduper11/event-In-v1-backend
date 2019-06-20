@@ -6,7 +6,7 @@ async function getEventNotJoined(req, res) {
   const { uuid } = req.claims;
 
   const connection = await mysqlPool.getConnection();
-  const sqlQuery = `SELECT id, name, owner_uuid, company, created_at, finish_at, youtube_streaming_url FROM events
+  const sqlQuery = `SELECT id, name, owner_uuid, company, created_at, finish_at, streaming_url FROM events
   WHERE id NOT IN
   (SELECT id FROM events
   JOIN user_events ON id = event_id WHERE uuid = '${uuid}');`;
