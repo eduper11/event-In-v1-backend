@@ -9,7 +9,7 @@ async function validateData(payload) {
       .min(3)
       .max(128)
       .required(),
-    linkedIn: Joi.string()
+    linkedin: Joi.string()
       .uri({
         scheme: ['http', 'https']
       })
