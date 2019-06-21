@@ -93,11 +93,11 @@ async function sendEmailRegistration(userEmail, verificationCode) {
     to: userEmail,
     from: {
       email: 'event_in@yopmail.com',
-      name: 'Eduardo, from Event-In'
+      name: 'Edu, from Event-In Team'
     },
     subject: 'Activation code for your account',
     text: 'Meet all people in your event',
-    html: `To confirm the account press <a href="${linkActivacion}">here</a>`
+    html: `Thanks to register on our app. Please, to confirm the account press <a href="${linkActivacion}">here</a>`
   };
 
   const data = await sendgridMail.send(msg);
