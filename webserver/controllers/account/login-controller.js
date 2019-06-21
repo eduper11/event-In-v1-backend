@@ -101,6 +101,7 @@ async function login(req, res, next) {
         uuid: userData.uuid,
         expiresIn: jwtTokenExpiration
       };
+      connection.release();
 
       return res.status(200).json(response);
     }
