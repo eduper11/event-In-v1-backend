@@ -14,8 +14,9 @@ async function validateData(payload) {
       .required(),
     finish_at: Joi.date().required(),
     streaming_url: Joi.string()
-      .uri({ allowRelative: true })
+      .uri()
       .allow(null)
+      .allow('')
   };
 
   return Joi.validate(payload, schema);
