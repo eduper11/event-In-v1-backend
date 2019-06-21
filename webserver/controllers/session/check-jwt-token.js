@@ -16,11 +16,15 @@ function checkJwtToken(req, res, next) {
   //   if (!authorization.startsWith('Bearer '))
   const [prefix, token] = authorization.split(' ');
   if (prefix !== 'Bearer') {
-    return res.status(401).send();
+    const notAuthorizedError = new NotAuthorizedError('Session expired', 401);
+    return next(notAuthorizedError);
+    // return res.status(401).send();
   }
 
   if (!token) {
-    return res.status(401).send();
+    const notAuthorizedError = new NotAuthorizedError('Session expired', 401);
+    return next(notAuthorizedError);
+    // return res.status(401).send();
   }
   try {
     const decoded = jwt.verify(token, authJwtSecret);
