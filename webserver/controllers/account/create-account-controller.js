@@ -43,7 +43,9 @@ async function addUserProfile(uuid, full_name) {
 
   await connection.query(sqlQuery, {
     uuid: verificationCode,
-    full_name: fullName
+    full_name: fullName,
+    avatarUrl:
+      'https://res.cloudinary.com/hackabos1/image/upload/v1561585882/101829432-happy-emoji-isolated-on-white-background-smiling-face-emoticon-3d-rendering_kdtln9.jpg'
   });
 
   connection.release();
